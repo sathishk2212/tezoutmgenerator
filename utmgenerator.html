@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tezo UTM Link Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap">
+<style>
+:root{--red:#e54a59;--white:#ffffff;--black:#1e1e1e;--lilac:#b0a8fe;--blue:#4e3aad;--beige:#e8dccc;
+--card:#262626;--line:rgba(232,220,204,.14);--mute:rgba(232,220,204,.62);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark}
+*,*::before,*::after{box-sizing:inherit}
+html{background:var(--black);scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--black);color:var(--white);font-family:'Poppins',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:15px;line-height:1.5;
+background-image:radial-gradient(60% 40% at 85% -5%,rgba(78,58,173,.45),transparent 70%),radial-gradient(40% 30% at 0% 0%,rgba(229,74,89,.18),transparent 70%);background-repeat:no-repeat}
+.wrap{max-width:760px;margin:0 auto;padding:28px 18px 56px}
+h1{font-size:26px;font-weight:600;margin:0 0 4px}h1 span{color:var(--red)}
+.sub{color:var(--mute);margin:0 0 22px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:16px}
+label{display:block;font-weight:500;margin:0 0 6px}
+.hint{color:var(--mute);font-size:12.5px;margin:0 0 6px;font-weight:400}
+input[type=text]{width:100%;background:var(--black);color:var(--white);border:1px solid var(--line);border-radius:10px;padding:11px 13px;font:inherit;outline:none;transition:border-color .15s,box-shadow .15s}
+input[type=text]::placeholder{color:rgba(232,220,204,.35)}
+input[type=text]:focus{border-color:var(--lilac);box-shadow:0 0 0 3px rgba(176,168,254,.2)}
+.field{margin-bottom:18px}.field:last-child{margin-bottom:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.chip{background:transparent;color:var(--beige);border:1px solid var(--line);border-radius:999px;padding:5px 13px;font:inherit;font-size:13px;cursor:pointer;transition:all .15s}
+.chip:hover{border-color:var(--lilac);color:var(--white)}
+.chip.on{background:var(--blue);border-color:var(--lilac);color:var(--white)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:560px){.grid{grid-template-columns:1fr}}
+h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--lilac);margin:0 0 12px;font-weight:600}
+.out{background:rgba(78,58,173,.2);border:1px solid var(--lilac);border-radius:12px;padding:14px;word-break:break-all;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13.5px;min-height:56px}
+.out.empty{border-style:dashed;border-color:var(--line);background:transparent;color:var(--mute);font-family:inherit}
+.out mark{background:none;font-weight:600}.m1{color:var(--red)}.m2{color:var(--lilac)}.m3{color:var(--beige)}
+.btns{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.btn{border:0;border-radius:10px;padding:11px 20px;font:inherit;font-weight:500;cursor:pointer;transition:transform .1s,opacity .15s}
+.btn:active{transform:scale(.97)}
+.btn.p{background:var(--red);color:var(--white)}.btn.s{background:transparent;color:var(--beige);border:1px solid var(--line)}
+.btn[disabled]{opacity:.35;cursor:not-allowed}
+.map{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13px;margin-top:16px}
+.map code{color:var(--lilac);font-family:ui-monospace,Menlo,Consolas,monospace}.map span{color:var(--beige);word-break:break-word}
+.miss{color:var(--red);font-size:13px;margin-top:10px;min-height:19px}
+.hist{list-style:none;margin:0;padding:0}
+.hist li{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:9px 0;border-top:1px solid var(--line);font-size:12.5px}
+.hist li:first-child{border-top:0}.hist .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--beige);min-width:0}
+.hist button{flex:none;background:none;border:1px solid var(--line);color:var(--lilac);border-radius:8px;padding:4px 10px;font:inherit;font-size:12px;cursor:pointer}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);background:var(--beige);color:var(--black);padding:10px 18px;border-radius:999px;font-weight:500;opacity:0;pointer-events:none;transition:all .2s}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1><span>Tezo</span> UTM Link Generator</h1>
+
+<div class="card">
+<div class="field">
+<label for="url">Page link</label>
+<input type="text" id="url" placeholder="https://www.tezo.com/ai-ready-data#quality" autocomplete="off">
+</div>
+<div class="field">
+<label for="camp">Campaign name</label>
+<input type="text" id="camp" placeholder="Inside Sales_Project based Campaign" autocomplete="off">
+</div>
+<div class="grid">
+<div class="field">
+<label for="src">Source</label>
+<input type="text" id="src" placeholder="LinkedIn or Email or Any other" autocomplete="off">
+<div class="chips" data-for="src"><button class="chip" type="button">LinkedIn</button><button class="chip" type="button">Email</button><button class="chip" type="button">Meta</button></div>
+</div>
+<div class="field">
+<label for="med">Medium</label>
+<input type="text" id="med" placeholder="Organic or Paid or Any other" autocomplete="off">
+<div class="chips" data-for="med"><button class="chip" type="button">Organic</button><button class="chip" type="button">Paid</button><button class="chip" type="button">Referral</button></div>
+</div>
+</div>
+</div>
+
+<input type="hidden" id="fs"><input type="hidden" id="fm">
+
+<div class="card">
+<h2>Your tracked link</h2>
+<div class="out empty" id="out">Fill in the fields above to see your link.</div>
+<div class="miss" id="miss"></div>
+<div class="btns">
+<button class="btn p" id="copy" disabled>Copy link</button>
+<button class="btn s" id="open" disabled>Open link</button>
+<button class="btn s" id="clear">Clear</button>
+</div>
+</div>
+
+<div class="card" id="hcard" hidden>
+<h2>Recent links</h2>
+<ul class="hist" id="hist"></ul>
+</div>
+</div>
+<div class="toast" id="toast">Copied</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const enc=s=>encodeURIComponent(s).replace(/[!'()*]/g,c=>'%'+c.charCodeAt(0).toString(16).toUpperCase());
+const slug=s=>s.trim().toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'');
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1).toLowerCase();
+let touched=false,history=[];
+try{history=JSON.parse(localStorage.getItem('tezo_utm_hist')||'[]')}catch(e){}
+
+function derive(){
+  const s=$('src').value.trim(),m=$('med').value.trim();
+  if(!s&&!m)return['',''];
+  const op=/^(organic|paid)$/i.test(m);
+  let fs=s,fm='';
+  if(op){fs=s?s+' '+cap(m):cap(m);fm=/linkedin|meta|facebook|instagram|twitter|^x$|youtube|reddit/i.test(s)?m.toLowerCase()+'_social':m.toLowerCase()+(s?'_'+slug(s):'')}
+  else{fm=slug(m)}
+  return[fs,fm];
+}
+function autofill(){if(touched)return;const[a,b]=derive();$('fs').value=a;$('fm').value=b}
+
+function build(){
+  let raw=$('url').value.trim();
+  if(!raw)return null;
+  if(!/^https?:\/\//i.test(raw))raw='https://'+raw;
+  let hash='',i=raw.indexOf('#');
+  if(i>-1){hash=raw.slice(i);raw=raw.slice(0,i)}
+  let q='',j=raw.indexOf('?');
+  if(j>-1){q=raw.slice(j+1);raw=raw.slice(0,j)}
+  const keep=q.split('&').filter(p=>p&&!/^utm_(campaign|source|medium)=/i.test(p));
+  const c=$('camp').value.trim(),s=$('fs').value.trim(),m=$('fm').value.trim();
+  const add=[['utm_campaign',c],['utm_source',s],['utm_medium',m]].filter(x=>x[1]).map(x=>x[0]+'='+enc(x[1]));
+  return{raw,keep,add,hash,c,s,m};
+}
+let current='';
+function render(){
+  autofill();
+  const b=build(),out=$('out');
+  const missing=[];
+  if(!$('url').value.trim())missing.push('page link');
+  if(!$('camp').value.trim())missing.push('campaign name');
+  if(!$('fs').value.trim())missing.push('source');
+  if(!$('fm').value.trim())missing.push('medium');
+  $('miss').textContent=missing.length&&($('url').value||$('camp').value||$('src').value||$('med').value)?'Still needed: '+missing.join(', '):'';
+  const ok=!missing.length&&b;
+  $('copy').disabled=!ok;$('open').disabled=!ok;
+  if(!ok){current='';out.className='out empty';out.textContent='Fill in the fields above to see your link.';return}
+  const qs=[...b.keep,...b.add];
+  current=b.raw+'?'+qs.join('&')+b.hash;
+  out.className='out';out.textContent='';
+  out.append(b.raw+'?'+(b.keep.length?b.keep.join('&')+'&':''));
+  const cls=['m1','m2','m3'];
+  b.add.forEach((p,k)=>{const e=document.createElement('mark');e.className=cls[k];e.textContent=p;out.append(e);if(k<2)out.append('&')});
+  out.append(b.hash);
+}
+function toast(t){const e=$('toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),1500)}
+async function copyText(t){
+  try{await navigator.clipboard.writeText(t)}catch(e){const a=document.createElement('textarea');a.value=t;document.body.append(a);a.select();try{document.execCommand('copy')}catch(_){}a.remove()}
+  toast('Copied')
+}
+function renderHist(){
+  const ul=$('hist');ul.textContent='';$('hcard').hidden=!history.length;
+  history.forEach(h=>{const li=document.createElement('li'),t=document.createElement('span'),b=document.createElement('button');
+    t.className='t';t.textContent=h;t.title=h;b.textContent='Copy';b.onclick=()=>copyText(h);li.append(t,b);ul.append(li)});
+}
+function saveHist(l){
+  history=[l,...history.filter(x=>x!==l)].slice(0,5);
+  try{localStorage.setItem('tezo_utm_hist',JSON.stringify(history))}catch(e){}
+  renderHist();
+}
+['url','camp'].forEach(id=>$(id).addEventListener('input',render));
+['src','med'].forEach(id=>$(id).addEventListener('input',()=>{touched=false;render();syncChips()}));
+['fs','fm'].forEach(id=>$(id).addEventListener('input',()=>{touched=true;render()}));
+document.querySelectorAll('.chips').forEach(g=>g.addEventListener('click',e=>{
+  if(!e.target.classList.contains('chip'))return;
+  $(g.dataset.for).value=e.target.textContent;touched=false;render();syncChips()}));
+function syncChips(){document.querySelectorAll('.chips').forEach(g=>{const v=$(g.dataset.for).value.trim().toLowerCase();
+  g.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.textContent.toLowerCase()===v))})}
+$('copy').onclick=()=>{if(current){copyText(current);saveHist(current)}};
+$('open').onclick=()=>{if(current)window.open(current,'_blank','noopener')};
+$('clear').onclick=()=>{['url','camp','src','med','fs','fm'].forEach(id=>$(id).value='');touched=false;render();syncChips()};
+renderHist();render();
+</script>
+</body>
+</html>
